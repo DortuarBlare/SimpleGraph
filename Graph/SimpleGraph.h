@@ -7,46 +7,46 @@ private:
 	Graph<VertexType, EdgeType>* graph;
 
 public:
-	SimpleGraph(); // Создается пустой List-Граф
+	SimpleGraph(); // Пустой List-Граф
 	SimpleGraph(int amountOfVertices, bool directed, bool listGraph);
 	SimpleGraph(int amountOfVertices, int amountOfEdges, bool directed, bool listGraph); // Случайные ребра
 	SimpleGraph(const SimpleGraph<VertexType, EdgeType>& graph);
 	~SimpleGraph();
 
 	// Вершины
-	VertexType* pushBackVertex(); // +
-	VertexType* insertVertex(int index); // +
-	VertexType* getVertexByIndex(int index); // +
-	template<typename VertexNameType> VertexType* getVertexByName(VertexNameType name); // +
-	int getVertexIndex(VertexType* vertex); // +
-	bool deleteVertex(VertexType* vertexToDelete); // +
-	bool deleteVertexByIndex(int index); // +
-	template<typename VertexNameType> bool deleteVertexByName(VertexNameType name); // +
+	VertexType* pushBackVertex();
+	VertexType* insertVertex(int index);
+	VertexType* getVertexByIndex(int index);
+	template<typename VertexNameType> VertexType* getVertexByName(VertexNameType name);
+	int getVertexIndex(VertexType* vertex);
+	bool deleteVertex(VertexType* vertexToDelete);
+	bool deleteVertexByIndex(int index);
+	template<typename VertexNameType> bool deleteVertexByName(VertexNameType name);
 
 	// Ребра
-	bool insertEdge(VertexType* v1, VertexType* v2); // +
-	bool insertEdgeByVertexIndexes(int v1, int v2); // +
-	template<typename VertexNameType> bool insertEdgeByVertexNames(VertexNameType v1, VertexNameType v2); // +
-	EdgeType* getEdge(VertexType* v1, VertexType* v2); // +
-	EdgeType* getEdgeByVertexIndexes(int v1, int v2); // +
-	template<typename VertexNameType> EdgeType* getEdgeByVertexNames(VertexNameType v1, VertexNameType v2); // +
-	bool hasEdge(VertexType* v1, VertexType* v2); // +
-	bool hasEdge(int v1, int v2); // +
-	bool deleteEdge(VertexType* v1, VertexType* v2); // +
-	bool deleteEdgeByVertexIndexes(int v1, int v2); // +
-	template<typename VertexNameType> bool deleteEdgeByVertexNames(VertexNameType v1, VertexNameType v2); // +
+	bool insertEdge(VertexType* v1, VertexType* v2);
+	bool insertEdgeByVertexIndexes(int v1, int v2);
+	template<typename VertexNameType> bool insertEdgeByVertexNames(VertexNameType v1, VertexNameType v2);
+	EdgeType* getEdge(VertexType* v1, VertexType* v2);
+	EdgeType* getEdgeByVertexIndexes(int v1, int v2);
+	template<typename VertexNameType> EdgeType* getEdgeByVertexNames(VertexNameType v1, VertexNameType v2);
+	bool hasEdge(VertexType* v1, VertexType* v2);
+	bool hasEdge(int v1, int v2);
+	bool deleteEdge(VertexType* v1, VertexType* v2);
+	bool deleteEdgeByVertexIndexes(int v1, int v2);
+	template<typename VertexNameType> bool deleteEdgeByVertexNames(VertexNameType v1, VertexNameType v2);
 
 	void toListGraph();
 	void toMatrixGraph();
 
 	void print(bool printWithNames);
 
-	double saturationCoefficient(); // +
+	double saturationCoefficient();
 	Graph<VertexType, EdgeType>* getGraph();
-	bool isDirected(); // +
-	bool isListGraph(); // +
-	int getAmountOfVertices(); // +
-	int getAmountOfEdges(); // +
+	bool isDirected();
+	bool isListGraph();
+	int getAmountOfVertices();
+	int getAmountOfEdges();
 };
 
 template<typename VertexType, typename EdgeType>
@@ -55,10 +55,25 @@ inline SimpleGraph<VertexType, EdgeType>::SimpleGraph() {
 }
 
 template<typename VertexType, typename EdgeType>
+inline SimpleGraph<VertexType, EdgeType>::SimpleGraph(int amountOfVertices, bool directed, bool listGraph) {
+	if (listGraph)
+		graph = new ListGraph<VertexType, EdgeType>(directed);
+	else
+		graph = new MatrixGraph<VertexType, EdgeType>(directed);
+
+	for (int i = 0; i < amountOfVertices; i++) {
+		stringstream ss;
+		ss << i;
+		VertexType* newVertex = pushBackVertex();
+		newVertex->setName("vertex" + ss.str());
+		newVertex->setData(i);
+	}
+}
+
+template<typename VertexType, typename EdgeType>
 inline SimpleGraph<VertexType, EdgeType>::~SimpleGraph() {
 	delete graph;
 }
-
 
 
 template<typename VertexType, typename EdgeType>
@@ -165,7 +180,6 @@ inline bool SimpleGraph<VertexType, EdgeType>::deleteVertexByName(VertexNameType
 
 	return result;
 }
-
 
 
 template<typename VertexType, typename EdgeType>
@@ -340,12 +354,10 @@ inline bool SimpleGraph<VertexType, EdgeType>::deleteEdgeByVertexNames(VertexNam
 	return result;
 }
 
-
 template<typename VertexType, typename EdgeType>
 inline void SimpleGraph<VertexType, EdgeType>::print(bool printWithNames) {
 	graph->print(printWithNames);
 }
-
 
 
 template<typename VertexType, typename EdgeType>
