@@ -1,10 +1,10 @@
-#pragma once
+п»ї#pragma once
 
 template<typename VertexType, typename WeightType, typename DataType>
 class Edge {
 private:
-	VertexType* v1; // Вершина, из которой исходит ребро
-	VertexType* v2; // Вершина, в которую входит ребро
+	VertexType* v1; // Р’РµСЂС€РёРЅР°, РёР· РєРѕС‚РѕСЂРѕР№ РёСЃС…РѕРґРёС‚ СЂРµР±СЂРѕ
+	VertexType* v2; // Р’РµСЂС€РёРЅР°, РІ РєРѕС‚РѕСЂСѓСЋ РІС…РѕРґРёС‚ СЂРµР±СЂРѕ
 	WeightType weight;
 	DataType data;
 
@@ -55,10 +55,10 @@ inline Edge<VertexType, WeightType, DataType>::Edge(VertexType* v1, VertexType* 
 template<typename VertexType, typename WeightType, typename DataType>
 inline ostream& operator<<(ostream& os, const Edge<VertexType, WeightType, DataType>& output) {
 	os << '{' << endl;
-	os << "Первая вершина: " << endl << *output.v1 << endl;
-	os << "Вторая вершина: " << endl << *output.v2 << endl;
-	os << "Вес ребра: " << output.weight << endl;
-	os << "Данные ребра: " << output.data << endl;
+	os << "РџРµСЂРІР°СЏ РІРµСЂС€РёРЅР°: " << endl << *output.v1 << endl;
+	os << "Р’С‚РѕСЂР°СЏ РІРµСЂС€РёРЅР°: " << endl << *output.v2 << endl;
+	os << "Р’РµСЃ СЂРµР±СЂР°: " << output.weight << endl;
+	os << "Р”Р°РЅРЅС‹Рµ СЂРµР±СЂР°: " << output.data << endl;
 	os << '}' << endl;
 
 	return os;
@@ -66,9 +66,9 @@ inline ostream& operator<<(ostream& os, const Edge<VertexType, WeightType, DataT
 
 template<typename VertexType, typename WeightType, typename DataType>
 inline istream& operator>>(istream& is, Edge<VertexType, WeightType, DataType>& input) {
-	cout << "Вес ребра: ";
+	cout << "Р’РµСЃ СЂРµР±СЂР°: ";
 	is >> input.weight;
-	cout << "Данные ребра: ";
+	cout << "Р”Р°РЅРЅС‹Рµ СЂРµР±СЂР°: ";
 	is >> input.data;
 
 	return is;

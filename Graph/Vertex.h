@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 template<typename NameType, typename DataType>
 class Vertex {
@@ -34,8 +34,8 @@ inline Vertex<NameType, DataType>::Vertex(NameType name, DataType data) {
 template<typename NameType, typename DataType>
 inline ostream& operator<<(ostream& os, const Vertex<NameType, DataType>& output) {
 	os << '{' << endl;
-	os << "Èìÿ âåğøèíû: " << output.name << endl;
-	os << "Äàííûå âåğøèíû: " << output.data << endl;
+	os << "Ğ˜Ğ¼Ñ Ğ²ĞµÑ€ÑˆĞ¸Ğ½Ñ‹: " << output.name << endl;
+	os << "Ğ”Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ²ĞµÑ€ÑˆĞ¸Ğ½Ñ‹: " << output.data << endl;
 	os << '}' << endl;
 
 	return os;
@@ -43,9 +43,9 @@ inline ostream& operator<<(ostream& os, const Vertex<NameType, DataType>& output
 
 template<typename NameType, typename DataType>
 inline istream& operator>>(istream& is, Vertex<NameType, DataType>& input) {
-	cout << "Èìÿ âåğøèíû: ";
+	cout << "Ğ˜Ğ¼Ñ Ğ²ĞµÑ€ÑˆĞ¸Ğ½Ñ‹: ";
 	is >> input.name;
-	cout << "Äàííûå âåğøèíû: ";
+	cout << "Ğ”Ğ°Ğ½Ğ½Ñ‹Ğµ Ğ²ĞµÑ€ÑˆĞ¸Ğ½Ñ‹: ";
 	is >> input.data;
 
 	return is;

@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include "Graph.h"
 
 template<typename VertexType, typename EdgeType>
@@ -7,13 +7,13 @@ private:
 	Graph<VertexType, EdgeType>* graph;
 
 public:
-	SimpleGraph(); // Пустой List-Граф
+	SimpleGraph(); // РџСѓСЃС‚РѕР№ List-Р“СЂР°С„
 	SimpleGraph(int amountOfVertices, bool directed, bool listGraph);
-	SimpleGraph(int amountOfVertices, int amountOfEdges, bool directed, bool listGraph); // Случайные ребра
+	SimpleGraph(int amountOfVertices, int amountOfEdges, bool directed, bool listGraph); // РЎР»СѓС‡Р°Р№РЅС‹Рµ СЂРµР±СЂР°
 	SimpleGraph(const SimpleGraph<VertexType, EdgeType>& graph);
 	~SimpleGraph();
 
-	// Вершины
+	// Р’РµСЂС€РёРЅС‹
 	VertexType* pushBackVertex();
 	VertexType* insertVertex(int index);
 	VertexType* getVertexByIndex(int index);
@@ -23,7 +23,7 @@ public:
 	bool deleteVertexByIndex(int index);
 	template<typename VertexNameType> bool deleteVertexByName(VertexNameType name);
 
-	// Ребра
+	// Р РµР±СЂР°
 	bool insertEdge(VertexType* v1, VertexType* v2);
 	bool insertEdgeByVertexIndexes(int v1, int v2);
 	template<typename VertexNameType> bool insertEdgeByVertexNames(VertexNameType v1, VertexNameType v2);

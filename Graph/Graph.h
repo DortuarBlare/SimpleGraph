@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -10,9 +10,9 @@ template<typename VertexType, typename EdgeType>
 class Graph {
 protected:
 	vector<VertexType*> vertexVector;
-	bool directed; // Ориентированный или неориентированный
-	bool listGraph; // List-Граф или Matrix-Граф
-	int amountOfEdges; // Количество рёбер
+	bool directed; // РћСЂРёРµРЅС‚РёСЂРѕРІР°РЅРЅС‹Р№ РёР»Рё РЅРµРѕСЂРёРµРЅС‚РёСЂРѕРІР°РЅРЅС‹Р№
+	bool listGraph; // List-Р“СЂР°С„ РёР»Рё Matrix-Р“СЂР°С„
+	int amountOfEdges; // РљРѕР»РёС‡РµСЃС‚РІРѕ СЂС‘Р±РµСЂ
 
 public:
 	virtual VertexType* insertVertex(int index) = 0;
@@ -55,7 +55,7 @@ public:
 
 		bool begin() {
 			if (graph->vertexVector.empty())
-				throw "В графе отсутствуют вершины";
+				throw "Р’ РіСЂР°С„Рµ РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ РІРµСЂС€РёРЅС‹";
 
 			it = graph->vertexVector.begin();
 
@@ -88,7 +88,7 @@ public:
 
 		VertexType* operator*() {
 			if (onEnd)
-				throw "Указатель за пределами графа";
+				throw "РЈРєР°Р·Р°С‚РµР»СЊ Р·Р° РїСЂРµРґРµР»Р°РјРё РіСЂР°С„Р°";
 
 			return *it;
 		}
@@ -110,7 +110,7 @@ public:
 template<typename VertexType, typename EdgeType>
 inline VertexType* Graph<VertexType, EdgeType>::getVertexByIndex(int index) {
 	if (index < 0 || index >= vertexVector.size())
-		throw "Выход индекса за пределы вектора";
+		throw "Р’С‹С…РѕРґ РёРЅРґРµРєСЃР° Р·Р° РїСЂРµРґРµР»С‹ РІРµРєС‚РѕСЂР°";
 
 	return vertexVector[index];
 }
@@ -128,7 +128,7 @@ inline VertexType* Graph<VertexType, EdgeType>::getVertexByName(VertexNameType n
 	}
 
 	if (vertexToFind == nullptr)
-		throw "Вершины не существует";
+		throw "Р’РµСЂС€РёРЅС‹ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚";
 
 	return vertexToFind;
 }
@@ -185,7 +185,7 @@ inline int Graph<VertexType, EdgeType>::getAmountOfEdges() {
 template<typename VertexType, typename EdgeType>
 class ListGraph : public Graph<VertexType, EdgeType> {
 private:
-	vector<list<EdgeType*>> adjacencyList; // Списки смежности
+	vector<list<EdgeType*>> adjacencyList; // РЎРїРёСЃРєРё СЃРјРµР¶РЅРѕСЃС‚Рё
 
 public:
 	ListGraph(bool directed);
@@ -223,7 +223,7 @@ public:
 		bool begin() {
 			if (graph->amountOfEdges != 0) {
 				for (listIndex = 0; listIndex < graph->adjacencyList.size(); listIndex++) {
-					// Ищем первое попавшееся ребро
+					// РС‰РµРј РїРµСЂРІРѕРµ РїРѕРїР°РІС€РµРµСЃСЏ СЂРµР±СЂРѕ
 					for (it = graph->adjacencyList[listIndex].begin();
 						 it != graph->adjacencyList[listIndex].end();
 						 it++) {
@@ -235,7 +235,7 @@ public:
 				}
 			}
 			else
-				throw "В графе отсутствуют ребра";
+				throw "Р’ РіСЂР°С„Рµ РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ СЂРµР±СЂР°";
 
 			onEnd = true;
 			return false;
@@ -271,7 +271,7 @@ public:
 
 		EdgeType* operator*() {
 			if (onEnd) 
-				throw "Указатель за пределами графа";
+				throw "РЈРєР°Р·Р°С‚РµР»СЊ Р·Р° РїСЂРµРґРµР»Р°РјРё РіСЂР°С„Р°";
 				
 			return *it;
 		}
@@ -314,11 +314,11 @@ public:
 
 		bool begin() {
 			if (listIndex < 0 || listIndex > graph->adjacencyList.size())
-				throw "Выход индекса за пределы списка";
+				throw "Р’С‹С…РѕРґ РёРЅРґРµРєСЃР° Р·Р° РїСЂРµРґРµР»С‹ СЃРїРёСЃРєР°";
 
 			if (graph->getAmountOfEdges() != 0) {
 				if (graph->adjacencyList[listIndex].size() == 0)
-					throw "У вершины отсутствуют рёбра";
+					throw "РЈ РІРµСЂС€РёРЅС‹ РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ СЂС‘Р±СЂР°";
 
 				it = graph->adjacencyList[listIndex].begin();
 
@@ -328,7 +328,7 @@ public:
 				}
 			}
 			else
-				throw "В графе отсутствуют ребра";
+				throw "Р’ РіСЂР°С„Рµ РѕС‚СЃСѓС‚СЃС‚РІСѓСЋС‚ СЂРµР±СЂР°";
 
 			onEnd = true;
 			return false;
@@ -351,7 +351,7 @@ public:
 
 		EdgeType* operator*() {
 			if (onEnd)
-				throw "Указатель за пределами графа";
+				throw "РЈРєР°Р·Р°С‚РµР»СЊ Р·Р° РїСЂРµРґРµР»Р°РјРё РіСЂР°С„Р°";
 
 			return *it;
 		}
@@ -383,7 +383,7 @@ inline ListGraph<VertexType, EdgeType>::ListGraph(bool directed) {
 template<typename VertexType, typename EdgeType>
 inline VertexType* ListGraph<VertexType, EdgeType>::insertVertex(int index) {
 	if (index < 0 || index > adjacencyList.size())
-		throw "Выход индекса за пределы списка";
+		throw "Р’С‹С…РѕРґ РёРЅРґРµРєСЃР° Р·Р° РїСЂРµРґРµР»С‹ СЃРїРёСЃРєР°";
 
 	VertexType* newVertex = new VertexType;
 
@@ -396,9 +396,9 @@ inline VertexType* ListGraph<VertexType, EdgeType>::insertVertex(int index) {
 template<typename VertexType, typename EdgeType>
 inline bool ListGraph<VertexType, EdgeType>::deleteVertex(int index) {
 	if (index < 0 || index > adjacencyList.size())
-		throw "Выход индекса за пределы списка";
+		throw "Р’С‹С…РѕРґ РёРЅРґРµРєСЃР° Р·Р° РїСЂРµРґРµР»С‹ СЃРїРёСЃРєР°";
 
-	// Удаляем все ребра вершины
+	// РЈРґР°Р»СЏРµРј РІСЃРµ СЂРµР±СЂР° РІРµСЂС€РёРЅС‹
 	for (int i = 0; i < adjacencyList.size(); i++) {
 		for (auto it = adjacencyList[i].begin(); it != adjacencyList[i].end(); it++) {
 			if (this->getVertexIndex((*it)->getV2()) == index) {
@@ -409,11 +409,11 @@ inline bool ListGraph<VertexType, EdgeType>::deleteVertex(int index) {
 		}
 	}
 
-	// Удаляем список смежности вершины
+	// РЈРґР°Р»СЏРµРј СЃРїРёСЃРѕРє СЃРјРµР¶РЅРѕСЃС‚Рё РІРµСЂС€РёРЅС‹
 	this->amountOfEdges -= adjacencyList[index].size();
 	adjacencyList.erase(adjacencyList.begin() + index);
 
-	// Удаляем вершину из списка вершин
+	// РЈРґР°Р»СЏРµРј РІРµСЂС€РёРЅСѓ РёР· СЃРїРёСЃРєР° РІРµСЂС€РёРЅ
 	this->vertexVector.erase(this->vertexVector.begin() + index);
 
 	return true;
@@ -424,7 +424,7 @@ template<typename VertexType, typename EdgeType>
 inline bool ListGraph<VertexType, EdgeType>::insertEdge(int v1, int v2, EdgeType* newEdge) {
 	try {
 		if (hasEdge(v1, v2))
-			throw "Данное ребро уже существует";
+			throw "Р”Р°РЅРЅРѕРµ СЂРµР±СЂРѕ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚";
 	}
 	catch (const char* exception) {
 		throw exception;
@@ -443,10 +443,10 @@ inline bool ListGraph<VertexType, EdgeType>::insertEdge(int v1, int v2, EdgeType
 template<typename VertexType, typename EdgeType>
 inline EdgeType* ListGraph<VertexType, EdgeType>::getEdge(int v1, int v2) {
 	if (v1 < 0 || v1 >= adjacencyList.size() || v2 < 0 || v2 >= adjacencyList.size())
-		throw "Выход индекса за пределы списка";
+		throw "Р’С‹С…РѕРґ РёРЅРґРµРєСЃР° Р·Р° РїСЂРµРґРµР»С‹ СЃРїРёСЃРєР°";
 
 	if (v1 == v2)
-		throw "Петля недопустима";
+		throw "РџРµС‚Р»СЏ РЅРµРґРѕРїСѓСЃС‚РёРјР°";
 
 	EdgeType* edgeToFind = nullptr;
 
@@ -471,7 +471,7 @@ inline EdgeType* ListGraph<VertexType, EdgeType>::getEdge(int v1, int v2) {
 	}
 
 	if (edgeToFind == nullptr)
-		throw "Ребра не существует";
+		throw "Р РµР±СЂР° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚";
 
 	return edgeToFind;
 }
@@ -479,10 +479,10 @@ inline EdgeType* ListGraph<VertexType, EdgeType>::getEdge(int v1, int v2) {
 template<typename VertexType, typename EdgeType>
 inline bool ListGraph<VertexType, EdgeType>::hasEdge(int v1, int v2) {
 	if (v1 < 0 || v1 >= adjacencyList.size() || v2 < 0 || v2 >= adjacencyList.size())
-		throw "Выход индекса за пределы списка";
+		throw "Р’С‹С…РѕРґ РёРЅРґРµРєСЃР° Р·Р° РїСЂРµРґРµР»С‹ СЃРїРёСЃРєР°";
 
 	if (v1 == v2)
-		throw "Петля недопустима";
+		throw "РџРµС‚Р»СЏ РЅРµРґРѕРїСѓСЃС‚РёРјР°";
 
 	for (auto edge : adjacencyList[v1]) {
 		if (this->directed && this->getVertexIndex(edge->getV2()) == v2)
@@ -506,7 +506,7 @@ template<typename VertexType, typename EdgeType>
 inline bool ListGraph<VertexType, EdgeType>::deleteEdge(int v1, int v2) {
 	try {
 		if (!hasEdge(v1, v2))
-			throw "Данное ребро не существует";
+			throw "Р”Р°РЅРЅРѕРµ СЂРµР±СЂРѕ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚";
 	}
 	catch (const char* exception) {
 		throw exception;
@@ -528,9 +528,9 @@ template<typename VertexType, typename EdgeType>
 inline void ListGraph<VertexType, EdgeType>::print(bool printWithNames) {
 	if (this->amountOfEdges != 0) {
 		if (printWithNames)
-			cout << "Список смежности графа с именами:" << endl;
+			cout << "РЎРїРёСЃРѕРє СЃРјРµР¶РЅРѕСЃС‚Рё РіСЂР°С„Р° СЃ РёРјРµРЅР°РјРё:" << endl;
 		else
-			cout << "Список смежности графа с индексами:" << endl;
+			cout << "РЎРїРёСЃРѕРє СЃРјРµР¶РЅРѕСЃС‚Рё РіСЂР°С„Р° СЃ РёРЅРґРµРєСЃР°РјРё:" << endl;
 
 		for (int i = 0; i < adjacencyList.size(); i++) {
 			if (!adjacencyList[i].empty()) {
@@ -574,14 +574,14 @@ inline void ListGraph<VertexType, EdgeType>::print(bool printWithNames) {
 		}
 	}
 	else 
-		cout << "Визуализация невозможна" << endl;
+		cout << "Р’РёР·СѓР°Р»РёР·Р°С†РёСЏ РЅРµРІРѕР·РјРѕР¶РЅР°" << endl;
 }
 
 
 template<typename VertexType, typename EdgeType>
 class MatrixGraph : public Graph<VertexType, EdgeType> {
 private:
-	vector<vector<EdgeType*>> adjacencyMatrix; // Матрица смежности
+	vector<vector<EdgeType*>> adjacencyMatrix; // РњР°С‚СЂРёС†Р° СЃРјРµР¶РЅРѕСЃС‚Рё
 
 public:
 	MatrixGraph(bool directed);
@@ -608,13 +608,13 @@ inline MatrixGraph<VertexType, EdgeType>::MatrixGraph(bool directed) {
 template<typename VertexType, typename EdgeType>
 inline VertexType* MatrixGraph<VertexType, EdgeType>::insertVertex(int index) {
 	if (index < 0 || index > adjacencyMatrix.size())
-		throw "Выход индекса за пределы списка";
+		throw "Р’С‹С…РѕРґ РёРЅРґРµРєСЃР° Р·Р° РїСЂРµРґРµР»С‹ СЃРїРёСЃРєР°";
 
 	VertexType* newVertex = new VertexType;
 
 	this->vertexVector.insert(this->vertexVector.begin() + index, newVertex);
 
-	// Вставка новой строки
+	// Р’СЃС‚Р°РІРєР° РЅРѕРІРѕР№ СЃС‚СЂРѕРєРё
 	vector<EdgeType*> newLine;
 	newLine.assign(adjacencyMatrix.size(), NULL);
 	adjacencyMatrix.insert(adjacencyMatrix.begin() + index, newLine);
@@ -628,14 +628,14 @@ inline VertexType* MatrixGraph<VertexType, EdgeType>::insertVertex(int index) {
 template<typename VertexType, typename EdgeType>
 inline bool MatrixGraph<VertexType, EdgeType>::deleteVertex(int index) {
 	if (index < 0 || index > adjacencyMatrix.size())
-		throw "Выход индекса за пределы списка";
+		throw "Р’С‹С…РѕРґ РёРЅРґРµРєСЃР° Р·Р° РїСЂРµРґРµР»С‹ СЃРїРёСЃРєР°";
 
-	// Удаляем строку и стоблец
+	// РЈРґР°Р»СЏРµРј СЃС‚СЂРѕРєСѓ Рё СЃС‚РѕР±Р»РµС†
 	adjacencyMatrix.erase(adjacencyMatrix.begin() + index);
 	for (int i = 0; i < adjacencyMatrix.size(); i++)
 		adjacencyMatrix[i].erase(adjacencyMatrix[i].begin() + index);
 
-	// Удаляем вершину из списка вершин
+	// РЈРґР°Р»СЏРµРј РІРµСЂС€РёРЅСѓ РёР· СЃРїРёСЃРєР° РІРµСЂС€РёРЅ
 	this->vertexVector.erase(this->vertexVector.begin() + index);
 
 	return true;
@@ -646,7 +646,7 @@ template<typename VertexType, typename EdgeType>
 inline bool MatrixGraph<VertexType, EdgeType>::insertEdge(int v1, int v2, EdgeType* newEdge) {
 	try {
 		if (hasEdge(v1, v2))
-			throw "Данное ребро уже существует";
+			throw "Р”Р°РЅРЅРѕРµ СЂРµР±СЂРѕ СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚";
 	}
 	catch (const char* exception) {
 		throw exception;
@@ -664,10 +664,10 @@ inline bool MatrixGraph<VertexType, EdgeType>::insertEdge(int v1, int v2, EdgeTy
 template<typename VertexType, typename EdgeType>
 inline EdgeType* MatrixGraph<VertexType, EdgeType>::getEdge(int v1, int v2) {
 	if (v1 < 0 || v1 >= adjacencyMatrix.size() || v2 < 0 || v2 >= adjacencyMatrix.size())
-		throw "Выход индекса за пределы списка";
+		throw "Р’С‹С…РѕРґ РёРЅРґРµРєСЃР° Р·Р° РїСЂРµРґРµР»С‹ СЃРїРёСЃРєР°";
 
 	if (v1 == v2)
-		throw "Петля недопустима";
+		throw "РџРµС‚Р»СЏ РЅРµРґРѕРїСѓСЃС‚РёРјР°";
 
 	EdgeType* edgeToFind = nullptr;
 
@@ -678,7 +678,7 @@ inline EdgeType* MatrixGraph<VertexType, EdgeType>::getEdge(int v1, int v2) {
 		edgeToFind = adjacencyMatrix[v2][v1];
 
 	if (edgeToFind == nullptr)
-		throw "Ребра не существует";
+		throw "Р РµР±СЂР° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚";
 
 	return edgeToFind;
 }
@@ -686,10 +686,10 @@ inline EdgeType* MatrixGraph<VertexType, EdgeType>::getEdge(int v1, int v2) {
 template<typename VertexType, typename EdgeType>
 inline bool MatrixGraph<VertexType, EdgeType>::hasEdge(int v1, int v2) {
 	if (v1 < 0 || v1 >= adjacencyMatrix.size() || v2 < 0 || v2 >= adjacencyMatrix.size())
-		throw "Выход индекса за пределы списка";
+		throw "Р’С‹С…РѕРґ РёРЅРґРµРєСЃР° Р·Р° РїСЂРµРґРµР»С‹ СЃРїРёСЃРєР°";
 
 	if (v1 == v2)
-		throw "Петля недопустима";
+		throw "РџРµС‚Р»СЏ РЅРµРґРѕРїСѓСЃС‚РёРјР°";
 
 	if (this->directed && adjacencyMatrix[v1][v2] != NULL)
 		return true;
@@ -704,7 +704,7 @@ template<typename VertexType, typename EdgeType>
 inline bool MatrixGraph<VertexType, EdgeType>::deleteEdge(int v1, int v2) {
 	try {
 		if (!hasEdge(v1, v2))
-			throw "Данное ребро не существует";
+			throw "Р”Р°РЅРЅРѕРµ СЂРµР±СЂРѕ РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚";
 	}
 	catch (const char* exception) {
 		throw exception;
@@ -720,14 +720,14 @@ template<typename VertexType, typename EdgeType>
 inline void MatrixGraph<VertexType, EdgeType>::print(bool printWithNames) {
 	if (this->getAmountOfVertices() != 0) {
 		if (printWithNames)
-			cout << "Матрица смежности графа с именами:" << endl;
+			cout << "РњР°С‚СЂРёС†Р° СЃРјРµР¶РЅРѕСЃС‚Рё РіСЂР°С„Р° СЃ РёРјРµРЅР°РјРё:" << endl;
 		else
-			cout << "Матрица смежности графа с индексами:" << endl;
+			cout << "РњР°С‚СЂРёС†Р° СЃРјРµР¶РЅРѕСЃС‚Рё РіСЂР°С„Р° СЃ РёРЅРґРµРєСЃР°РјРё:" << endl;
 
 		for (int i = 0; i < this->getVertexByIndex(0)->getName().size(); i++)
 			cout << ' ';
 		cout << '|';
-		// Имена по горизонтали
+		// РРјРµРЅР° РїРѕ РіРѕСЂРёР·РѕРЅС‚Р°Р»Рё
 		for (int i = 0; i < this->getAmountOfVertices(); i++) {
 			if (i == 0)
 				cout << "  " << this->getVertexByIndex(i)->getName();
@@ -742,7 +742,7 @@ inline void MatrixGraph<VertexType, EdgeType>::print(bool printWithNames) {
 		for (int i = 0; i < this->getAmountOfVertices() * this->getVertexByIndex(0)->getName().size(); i++)
 			cout << "--";
 		cout << endl;
-		// Имена по вертикали со значениями
+		// РРјРµРЅР° РїРѕ РІРµСЂС‚РёРєР°Р»Рё СЃРѕ Р·РЅР°С‡РµРЅРёСЏРјРё
 		for (int i = 0; i < this->getAmountOfVertices(); i++) {
 			cout << setw(2) << this->getVertexByIndex(i)->getName() << setw(0) << "|";
 			for (int j = 0; j < this->getAmountOfVertices(); j++) {
@@ -771,5 +771,5 @@ inline void MatrixGraph<VertexType, EdgeType>::print(bool printWithNames) {
 		}
 	}
 	else
-		cout << "Визуализация невозможна" << endl;
+		cout << "Р’РёР·СѓР°Р»РёР·Р°С†РёСЏ РЅРµРІРѕР·РјРѕР¶РЅР°" << endl;
 }
