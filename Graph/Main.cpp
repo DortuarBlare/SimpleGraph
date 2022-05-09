@@ -10,9 +10,9 @@ int main() {
     SimpleGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>* simpleGraph = 
         new SimpleGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>();
     
-    Graph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>::VertexIterator listVIt;
-    ListGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>::EdgeIterator listEIt;
-    ListGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>::OutputEdgeIterator listOEIt;
+	SimpleGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>::VertexIterator vertexIterator;
+	SimpleGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>::EdgeIterator edgeIterator;
+    SimpleGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>::OutputEdgeIterator outputEdgeIterator;
 
     int menuChoice;
     bool exitCreateMenu = false;
@@ -50,6 +50,34 @@ int main() {
             exitCreateMenu = true;
             break;
         }
+        case 3: {
+            int amountOfVertices, amountOfEdges;
+            bool listGraph, directedGraph;
+
+            cout << "Введите количество вершин: ";
+            cin >> amountOfVertices;
+
+            cout << "Введите количество рёбер: ";
+            cin >> amountOfEdges;
+
+            cout << "Введите тип графа (1 - Ориентированный, 0 - Неориентированный): ";
+            cin >> directedGraph;
+
+            cout << "Введите тип графа (1 - List-Граф, 0 - Matrix-Граф): ";
+            cin >> listGraph;
+
+            try {
+                simpleGraph = new SimpleGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>
+                    (amountOfVertices, amountOfEdges, directedGraph, listGraph);
+            }
+            catch (const char* exception) {
+                cout << exception << endl;
+                break;
+            }
+
+            exitCreateMenu = true;
+            break;
+        }
         case 0:
             return 0;
         default:
@@ -81,9 +109,12 @@ int main() {
 
         switch (menuChoice) {
         case 1: {
-            bool namesOrIndexes;
-            cout << "Способ визуализации (имена - 1, индексы - 0): ";
-            cin >> namesOrIndexes;
+            bool namesOrIndexes = true;
+
+			if (simpleGraph->isListGraph()) {
+				cout << "Способ визуализации (имена - 1, индексы - 0): ";
+				cin >> namesOrIndexes;
+			}
 
             cout << endl;
             simpleGraph->print(namesOrIndexes);
@@ -306,7 +337,8 @@ int main() {
             bool exitVertexIteratorMenu = false;
 
             try {
-                listVIt = Graph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>::VertexIterator(*simpleGraph->getGraph());
+                vertexIterator = SimpleGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>
+					::VertexIterator(*simpleGraph);
             }
             catch (const char* exception) {
                 cout << exception << endl;
@@ -326,19 +358,19 @@ int main() {
                 try {
                     switch (menuChoice) {
                     case 1: {
-                        listVIt.begin();
+                        vertexIterator.begin();
                         break;
                     }
                     case 2: {
-                        listVIt.end();
+                        vertexIterator.end();
                         break;
                     }
                     case 3: {
-                        listVIt++;
+                        vertexIterator++;
                         break;
                     }
                     case 4: {
-                        cout << **listVIt << endl;
+                        cout << **vertexIterator << endl;
                         system("pause");
                         break;
                     }
@@ -363,7 +395,7 @@ int main() {
             bool exitEdgeIteratorMenu = false;
 
             try {
-                listEIt = ListGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>::EdgeIterator(
+                /*edgeIterator = ListGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>::EdgeIterator(
                     static_cast<
                     ListGraph<
                     Vertex<string, int>,
@@ -371,7 +403,9 @@ int main() {
                     >*
                     >
                     (simpleGraph->getGraph())
-                );
+                );//*/
+				edgeIterator = SimpleGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>
+					::EdgeIterator(*simpleGraph);
             }
             catch (const char* exception) {
                 exitEdgeIteratorMenu = true;
@@ -393,19 +427,19 @@ int main() {
                 try {
                     switch (menuChoice) {
                     case 1: {
-                        listEIt.begin();
+                        edgeIterator.begin();
                         break;
                     }
                     case 2: {
-                        listEIt.end();
+                        edgeIterator.end();
                         break;
                     }
                     case 3: {
-                        listEIt++;
+                        edgeIterator++;
                         break;
                     }
                     case 4: {
-                        cout << **listEIt << endl;
+                        cout << **edgeIterator << endl;
                         system("pause");
                         break;
                     }
@@ -431,8 +465,9 @@ int main() {
 
             cout << "Введите индекс вершины для итератора исходящих рёбер: ";
             cin >> vertexIndex;
+
             try {
-                listOEIt = ListGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>::OutputEdgeIterator(
+                /*outputEdgeIterator = ListGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>::OutputEdgeIterator(
                     static_cast<
                     ListGraph<
                     Vertex<string, int>,
@@ -440,7 +475,9 @@ int main() {
                     >*
                     >
                     (simpleGraph->getGraph()), vertexIndex
-                );
+                );*/
+                outputEdgeIterator = SimpleGraph<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>
+                    ::OutputEdgeIterator(*simpleGraph, vertexIndex);
             }
             catch (const char* exception) {
                 exitOutputEdgeIteratorMenu = true;
@@ -462,19 +499,19 @@ int main() {
                 try {
                     switch (menuChoice) {
                     case 1: {
-                        listOEIt.begin();
+                        outputEdgeIterator.begin();
                         break;
                     }
                     case 2: {
-                        listOEIt.end();
+                        outputEdgeIterator.end();
                         break;
                     }
                     case 3: {
-                        listOEIt++;
+                        outputEdgeIterator++;
                         break;
                     }
                     case 4: {
-                        cout << **listOEIt << endl;
+                        cout << **outputEdgeIterator << endl;
                         system("pause");
                         break;
                     }

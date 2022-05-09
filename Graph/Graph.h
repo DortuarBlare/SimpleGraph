@@ -105,6 +105,28 @@ public:
 			return false;
 		}
 	};
+
+	class EdgeIterator {
+	public:
+		virtual bool begin() = 0;
+
+		virtual bool operator++(int) = 0;
+
+		virtual EdgeType* operator*() = 0;
+
+		virtual bool end() = 0;
+	};
+
+	class OutputEdgeIterator {
+	public:
+		virtual bool begin() = 0;
+
+		virtual bool operator++(int) = 0;
+
+		virtual EdgeType* operator*() = 0;
+
+		virtual bool end() = 0;
+	};
 };
 
 template<typename VertexType, typename EdgeType>
@@ -200,7 +222,7 @@ public:
 
 	void print(bool printWithNames);
 
-	class EdgeIterator {
+	class EdgeIterator : public Graph<VertexType, EdgeType>::EdgeIterator {
 	private:
 		ListGraph<VertexType, EdgeType>* graph;
 		typename list<EdgeType*>::iterator it;
@@ -291,7 +313,7 @@ public:
 		};
 	};
 
-	class OutputEdgeIterator {
+	class OutputEdgeIterator : public Graph<VertexType, EdgeType>::OutputEdgeIterator {
 	private:
 		ListGraph<VertexType, EdgeType>* graph;
 		typename list<EdgeType*>::iterator it;
@@ -304,6 +326,7 @@ public:
 		OutputEdgeIterator(ListGraph* graph, int vertexIndex) {
 			this->graph = graph;
 			this->listIndex = vertexIndex;
+
 			try {
 				begin();
 			}
@@ -595,6 +618,197 @@ public:
 	bool deleteEdge(int v1, int v2);
 
 	void print(bool printWithNames);
+
+	class EdgeIterator : public Graph<VertexType, EdgeType>::EdgeIterator {
+	private:
+		MatrixGraph<VertexType, EdgeType>* graph;
+		typename vector<EdgeType*>::iterator it;
+		int vectorIndex;
+		bool onEnd;
+
+	public:
+		EdgeIterator() {}
+
+		EdgeIterator(MatrixGraph* graph) {
+			this->graph = graph;
+			try {
+				begin();
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+		}
+
+		bool begin() {
+			if (graph->amountOfEdges != 0) {
+				for (vectorIndex = 0; vectorIndex < graph->adjacencyMatrix.size(); vectorIndex++) {
+					// Ищем первое попавшееся ребро
+					for (it = graph->adjacencyMatrix[vectorIndex].begin();
+						it != graph->adjacencyMatrix[vectorIndex].end();
+						it++) {
+						if (*it != NULL) {
+							onEnd = false;
+							return true;
+						}
+					}
+				}
+			}
+			else
+				throw "В графе отсутствуют ребра";
+
+			onEnd = true;
+			return false;
+		}
+
+		bool operator++(int) {
+			if (onEnd)
+				return false;
+
+			for (it++; vectorIndex < graph->adjacencyMatrix.size(); vectorIndex++) {
+				for (; it != graph->adjacencyMatrix[vectorIndex].end(); it++) {
+					if (graph->directed) {
+						if (*it != NULL) {
+							onEnd = false;
+							return true;
+						}
+					}
+					else {
+						if (*it != NULL && graph->getVertexIndex((*it)->getV1()) == vectorIndex) {
+							onEnd = false;
+							return true;
+						}
+					}
+				}
+
+				if (vectorIndex + 1 < graph->adjacencyMatrix.size())
+					it = graph->adjacencyMatrix[vectorIndex + 1].begin();
+			}
+
+			onEnd = true;
+			return false;
+		}
+
+		EdgeType* operator*() {
+			if (onEnd)
+				throw "Указатель за пределами графа";
+
+			return *it;
+		}
+
+		bool end() {
+			if (onEnd)
+				return true;
+
+			it = graph->adjacencyMatrix[graph->adjacencyMatrix.size() - 1].end();
+
+			if (it == graph->adjacencyMatrix[graph->adjacencyMatrix.size() - 1].end()) {
+				onEnd = true;
+				return true;
+			}
+
+			return false;
+		};
+	};
+
+	class OutputEdgeIterator : public Graph<VertexType, EdgeType>::OutputEdgeIterator {
+	private:
+		MatrixGraph<VertexType, EdgeType>* graph;
+		typename vector<EdgeType*>::iterator it;
+		int vectorIndex;
+		bool onEnd;
+
+	public:
+		OutputEdgeIterator() {}
+
+		OutputEdgeIterator(MatrixGraph* graph, int vertexIndex) {
+			this->graph = graph;
+			this->vectorIndex = vertexIndex;
+
+			try {
+				begin();
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+		}
+
+		bool begin() {
+			if (vectorIndex < 0 || vectorIndex > graph->adjacencyMatrix.size())
+				throw "Выход индекса за пределы вектора";
+
+			if (graph->getAmountOfEdges() != 0) {
+				if (graph->adjacencyMatrix[vectorIndex].size() == 0)
+					throw "У вершины отсутствуют рёбра";
+
+				it = graph->adjacencyMatrix[vectorIndex].begin();
+
+				if (*it != NULL) {
+					onEnd = false;
+					return true;
+				}
+			}
+			else
+				throw "В графе отсутствуют ребра";
+
+			onEnd = true;
+			return false;
+		}
+
+		bool operator++(int) {
+			if (onEnd)
+				return false;
+
+			for (it++; it != graph->adjacencyMatrix[vectorIndex].end(); it++) {
+				if (graph->directed) {
+					if (*it != NULL) {
+						onEnd = false;
+						return true;
+					}
+				}
+				else {
+					if (*it != NULL && graph->getVertexIndex((*it)->getV1()) == vectorIndex) {
+						onEnd = false;
+						return true;
+					}
+				}
+			}
+
+			onEnd = true;
+			return false;
+		}
+
+		EdgeType* operator*() {
+			if (onEnd)
+				throw "Указатель за пределами графа";
+
+			return *it;
+		}
+
+		bool end() {
+			/*if (onEnd)
+				return true;
+
+			it = graph->adjacencyMatrix[graph->adjacencyMatrix.size() - 1].end();
+
+			if (it == graph->adjacencyMatrix[graph->adjacencyMatrix.size() - 1].end()) {
+				onEnd = true;
+				return true;
+			}
+
+			return false;*/
+			if (onEnd)
+				return true;
+
+			it = graph->adjacencyMatrix[vectorIndex].end();
+
+			if (it == graph->adjacencyMatrix[vectorIndex].end()) {
+				onEnd = true;
+				return true;
+			}
+
+			return false;
+		};
+	};
 };
 
 template<typename VertexType, typename EdgeType>
@@ -719,10 +933,7 @@ inline bool MatrixGraph<VertexType, EdgeType>::deleteEdge(int v1, int v2) {
 template<typename VertexType, typename EdgeType>
 inline void MatrixGraph<VertexType, EdgeType>::print(bool printWithNames) {
 	if (this->getAmountOfVertices() != 0) {
-		if (printWithNames)
-			cout << "Матрица смежности графа с именами:" << endl;
-		else
-			cout << "Матрица смежности графа с индексами:" << endl;
+		cout << "Матрица смежности графа с именами:" << endl;
 
 		for (int i = 0; i < this->getVertexByIndex(0)->getName().size(); i++)
 			cout << ' ';

@@ -47,6 +47,189 @@ public:
 	bool isListGraph();
 	int getAmountOfVertices();
 	int getAmountOfEdges();
+	
+	class VertexIterator {
+	private:
+		SimpleGraph<VertexType, EdgeType>* simpleGraph;
+		typename Graph<VertexType, EdgeType>::VertexIterator it;
+
+	public:
+		VertexIterator() {}
+
+		VertexIterator(SimpleGraph<VertexType, EdgeType>& graph) {
+			this->simpleGraph = &graph;
+			try {
+				it = Graph<VertexType, EdgeType>::VertexIterator(*simpleGraph->graph);
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+		}
+
+		bool begin() {
+			try {
+				return it.begin();
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+
+			return false;
+		}
+
+		bool operator++(int) {
+			return it++;
+		}
+
+		VertexType* operator*() {
+			try {
+				return *it;
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+
+			return nullptr;
+		}
+
+		bool end() {
+			try {
+				return it.end();
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+
+			return false;
+		}
+	};
+
+	class EdgeIterator {
+	private:
+		SimpleGraph<VertexType, EdgeType>* simpleGraph;
+		typename Graph<VertexType, EdgeType>::EdgeIterator* it;
+
+	public:
+		EdgeIterator() {}
+
+		EdgeIterator(SimpleGraph<VertexType, EdgeType>& graph) {
+			this->simpleGraph = &graph;
+			try {
+				if (graph.isListGraph())
+					it = new typename ListGraph<VertexType, EdgeType>::EdgeIterator(
+						static_cast<ListGraph<VertexType, EdgeType>*>(simpleGraph->graph)
+					);
+				else
+					it = new typename MatrixGraph<VertexType, EdgeType>::EdgeIterator(
+						static_cast<MatrixGraph<VertexType, EdgeType>*>(simpleGraph->graph)
+					);
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+		}
+
+		bool begin() {
+			try {
+				return it->begin();
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+
+			return false;
+		}
+
+		bool operator++(int) {
+			return (*it)++;
+		}
+
+		EdgeType* operator*() {
+			try {
+				return **it;
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+
+			return nullptr;
+		}
+
+		bool end() {
+			try {
+				return it->end();
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+
+			return false;
+		}
+	};
+
+	class OutputEdgeIterator {
+	private:
+		SimpleGraph<VertexType, EdgeType>* simpleGraph;
+		typename Graph<VertexType, EdgeType>::OutputEdgeIterator* it;
+
+	public:
+		OutputEdgeIterator() {}
+
+		OutputEdgeIterator(SimpleGraph<VertexType, EdgeType>& graph, int vertexIndex) {
+			this->simpleGraph = &graph;
+
+			try {
+				if (graph.isListGraph())
+					it = new typename ListGraph<VertexType, EdgeType>::OutputEdgeIterator(
+						static_cast<ListGraph<VertexType, EdgeType>*>(simpleGraph->graph), vertexIndex
+					);
+				else
+					it = new typename MatrixGraph<VertexType, EdgeType>::OutputEdgeIterator(
+						static_cast<MatrixGraph<VertexType, EdgeType>*>(simpleGraph->graph), vertexIndex
+					);
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+		}
+
+		bool begin() {
+			try {
+				return it->begin();
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+
+			return false;
+		}
+
+		bool operator++(int) {
+			return (*it)++;
+		}
+
+		EdgeType* operator*() {
+			try {
+				return **it;
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+
+			return nullptr;
+		}
+
+		bool end() {
+			try {
+				return it->end();
+			}
+			catch (const char* exception) {
+				throw exception;
+			}
+
+			return false;
+		}
+	};
 };
 
 template<typename VertexType, typename EdgeType>
@@ -65,9 +248,53 @@ inline SimpleGraph<VertexType, EdgeType>::SimpleGraph(int amountOfVertices, bool
 		stringstream ss;
 		ss << i;
 		VertexType* newVertex = pushBackVertex();
-		newVertex->setName("vertex" + ss.str());
+		newVertex->setName("v" + ss.str());
 		newVertex->setData(i);
 	}
+}
+
+template<typename VertexType, typename EdgeType>
+inline SimpleGraph<VertexType, EdgeType>::SimpleGraph(int amountOfVertices, int amountOfEdges, bool directed, bool listGraph) {
+	if (listGraph)
+		graph = new ListGraph<VertexType, EdgeType>(directed);
+	else
+		graph = new MatrixGraph<VertexType, EdgeType>(directed);
+
+	for (int i = 0; i < amountOfVertices; i++) {
+		stringstream ss;
+		ss << i;
+		VertexType* newVertex = pushBackVertex();
+		newVertex->setName("v" + ss.str());
+		newVertex->setData(i);
+	}
+
+	if (amountOfEdges > (amountOfVertices * (amountOfVertices - 1)) / 2) {
+		throw "Количество рёбер превышают максимальное число";
+		return;
+	}
+
+	srand(time(0));
+	while (getAmountOfEdges() != amountOfEdges) {
+		try {
+			int v1 = rand() % (getAmountOfVertices() - 1);
+			int v2 = rand() % (getAmountOfVertices() - 1);
+
+			if (v1 == v2)
+				continue;
+
+			if (hasEdge(v1, v2))
+				continue;
+
+			insertEdgeByVertexIndexes(v1, v2);
+		}
+		catch (const char* exception) {}
+	}
+}
+
+template<typename VertexType, typename EdgeType>
+inline SimpleGraph<VertexType, EdgeType>::SimpleGraph(const SimpleGraph<VertexType, EdgeType>& graph) {
+	delete this->graph;
+	this->graph = graph.getGraph();
 }
 
 template<typename VertexType, typename EdgeType>
@@ -353,6 +580,18 @@ inline bool SimpleGraph<VertexType, EdgeType>::deleteEdgeByVertexNames(VertexNam
 
 	return result;
 }
+
+
+template<typename VertexType, typename EdgeType>
+inline void SimpleGraph<VertexType, EdgeType>::toListGraph() {
+
+}
+
+template<typename VertexType, typename EdgeType>
+inline void SimpleGraph<VertexType, EdgeType>::toMatrixGraph() {
+
+}
+
 
 template<typename VertexType, typename EdgeType>
 inline void SimpleGraph<VertexType, EdgeType>::print(bool printWithNames) {
