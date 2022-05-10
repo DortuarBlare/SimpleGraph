@@ -286,7 +286,10 @@ inline SimpleGraph<VertexType, EdgeType>::SimpleGraph(int amountOfVertices, int 
 			if (v1 == v2)
 				continue;
 
-			if (hasEdge(v1, v2))
+			if (directed && (hasEdge(v1, v2) || hasEdge(v2, v1)))
+				continue;
+
+			if (!directed && hasEdge(v1, v2))
 				continue;
 
 			insertEdgeByVertexIndexes(v1, v2);

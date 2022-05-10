@@ -924,7 +924,7 @@ inline bool MatrixGraph<VertexType, EdgeType>::insertEdge(int v1, int v2, EdgeTy
 	}
 
 	adjacencyMatrix[v1][v2] = newEdge;
-	if (this->directed)
+	if (!this->directed)
 		adjacencyMatrix[v2][v1] = newEdge;
 
 	this->amountOfEdges++;

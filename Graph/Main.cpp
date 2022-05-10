@@ -72,6 +72,7 @@ int main() {
             }
             catch (const char* exception) {
                 cout << exception << endl;
+                system("pause");
                 break;
             }
 
