@@ -102,6 +102,8 @@ int main() {
              << "4) Итератор вершин" << endl
              << "5) Итератор рёбер" << endl
              << "6) Итератор исходящих рёбер" << endl
+             << "7) Преобразовать в List-Граф" << endl
+             << "8) Преобразовать в Matrix-Граф" << endl
              << "0) Выход" << endl
              << endl << "> ";
 
@@ -530,6 +532,26 @@ int main() {
 
             }
 
+            break;
+        }
+        case 7: {
+            try {
+                simpleGraph->toListGraph();
+            }
+            catch (const char* exception) {
+                cout << exception << endl;
+                system("pause");
+            }
+            break;
+        }
+        case 8: {
+            try {
+                simpleGraph->toMatrixGraph();
+            }
+            catch (const char* exception) {
+                cout << exception << endl;
+                system("pause");
+            }
             break;
         }
         case 0:

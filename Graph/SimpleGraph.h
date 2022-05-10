@@ -165,6 +165,10 @@ public:
 
 			return false;
 		}
+
+		bool isOnEnd() {
+			return it->isOnEnd();
+		}
 	};
 
 	class OutputEdgeIterator {
@@ -584,12 +588,52 @@ inline bool SimpleGraph<VertexType, EdgeType>::deleteEdgeByVertexNames(VertexNam
 
 template<typename VertexType, typename EdgeType>
 inline void SimpleGraph<VertexType, EdgeType>::toListGraph() {
+	if (graph->isListGraph()) {
+		throw "Граф уже в форме List-Граф";
+		return;
+	}
 
+	Graph<VertexType, EdgeType>* listGraph = new ListGraph<VertexType, EdgeType>(graph->isDirected());
+
+	for (auto vertex : graph->getVertexVector()) {
+		listGraph->insertVertex(listGraph->getAmountOfVertices(), vertex);
+	}
+
+	SimpleGraph<VertexType, EdgeType>::EdgeIterator it = SimpleGraph<VertexType, EdgeType>::EdgeIterator(*this);
+
+	for (it.begin(); !it.isOnEnd(); it++) {
+		int v1 = getVertexIndex((*it)->getV1());
+		int v2 = getVertexIndex((*it)->getV2());
+		listGraph->insertEdge(v1, v2, *it);
+	}
+
+	delete this->graph;
+	this->graph = listGraph;
 }
 
 template<typename VertexType, typename EdgeType>
 inline void SimpleGraph<VertexType, EdgeType>::toMatrixGraph() {
+	if (!graph->isListGraph()) {
+		throw "Граф уже в форме Matrix-Граф";
+		return;
+	}
 
+	Graph<VertexType, EdgeType>* matrixGraph = new MatrixGraph<VertexType, EdgeType>(graph->isDirected());
+
+	for (auto vertex : graph->getVertexVector()) {
+		matrixGraph->insertVertex(matrixGraph->getAmountOfVertices(), vertex);
+	}
+
+	SimpleGraph<VertexType, EdgeType>::EdgeIterator it = SimpleGraph<VertexType, EdgeType>::EdgeIterator(*this);
+
+	for (it.begin(); !it.isOnEnd(); it++) {
+		int v1 = getVertexIndex((*it)->getV1());
+		int v2 = getVertexIndex((*it)->getV2());
+		matrixGraph->insertEdge(v1, v2, *it);
+	}
+
+	delete this->graph;
+	this->graph = matrixGraph;
 }
 
 

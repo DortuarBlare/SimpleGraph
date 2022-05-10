@@ -16,6 +16,7 @@ protected:
 
 public:
 	virtual VertexType* insertVertex(int index) = 0;
+	virtual bool insertVertex(int index, VertexType* vertex) = 0;
 	VertexType* getVertexByIndex(int index);
 	template<typename VertexNameType> VertexType* getVertexByName(VertexNameType name);
 	int getVertexIndex(VertexType* vertex);
@@ -29,6 +30,7 @@ public:
 	virtual void print(bool printWithNames) = 0;
 
 	double saturationCoefficient();
+	vector<VertexType*> getVertexVector();
 	bool isDirected();
 	bool isListGraph();
 	int getAmountOfVertices();
@@ -115,6 +117,8 @@ public:
 		virtual EdgeType* operator*() = 0;
 
 		virtual bool end() = 0;
+
+		virtual bool isOnEnd() = 0;
 	};
 
 	class OutputEdgeIterator {
@@ -183,6 +187,11 @@ inline double Graph<VertexType, EdgeType>::saturationCoefficient() {
 }
 
 template<typename VertexType, typename EdgeType>
+inline vector<VertexType*> Graph<VertexType, EdgeType>::getVertexVector() {
+	return this->vertexVector;
+}
+
+template<typename VertexType, typename EdgeType>
 inline bool Graph<VertexType, EdgeType>::isDirected() {
 	return directed;
 }
@@ -213,6 +222,7 @@ public:
 	ListGraph(bool directed);
 
 	VertexType* insertVertex(int index);
+	bool insertVertex(int index, VertexType* vertex);
 	bool deleteVertex(int index);
 
 	bool insertEdge(int v1, int v2, EdgeType* newEdge);
@@ -311,6 +321,10 @@ public:
 
 			return false;
 		};
+
+		bool isOnEnd() {
+			return onEnd;
+		}
 	};
 
 	class OutputEdgeIterator : public Graph<VertexType, EdgeType>::OutputEdgeIterator {
@@ -392,6 +406,10 @@ public:
 
 			return false;
 		};
+
+		bool isOnEnd() {
+			return onEnd;
+		}
 	};
 };
 
@@ -414,6 +432,19 @@ inline VertexType* ListGraph<VertexType, EdgeType>::insertVertex(int index) {
 	adjacencyList.insert(adjacencyList.begin() + index, list<EdgeType*>());
 
 	return newVertex;
+}
+
+template<typename VertexType, typename EdgeType>
+inline bool ListGraph<VertexType, EdgeType>::insertVertex(int index, VertexType* vertex) {
+	if (index < 0 || index > adjacencyList.size()) {
+		throw "Выход индекса за пределы списка";
+		return false;
+	}
+
+	this->vertexVector.insert(this->vertexVector.begin() + index, vertex);
+	adjacencyList.insert(adjacencyList.begin() + index, list<EdgeType*>());
+
+	return true;
 }
 
 template<typename VertexType, typename EdgeType>
@@ -601,6 +632,7 @@ inline void ListGraph<VertexType, EdgeType>::print(bool printWithNames) {
 }
 
 
+
 template<typename VertexType, typename EdgeType>
 class MatrixGraph : public Graph<VertexType, EdgeType> {
 private:
@@ -610,6 +642,7 @@ public:
 	MatrixGraph(bool directed);
 
 	VertexType* insertVertex(int index);
+	bool insertVertex(int index, VertexType* vertex);
 	bool deleteVertex(int index);
 
 	bool insertEdge(int v1, int v2, EdgeType* newEdge);
@@ -708,6 +741,10 @@ public:
 
 			return false;
 		};
+
+		bool isOnEnd() {
+			return onEnd;
+		}
 	};
 
 	class OutputEdgeIterator : public Graph<VertexType, EdgeType>::OutputEdgeIterator {
@@ -837,6 +874,26 @@ inline VertexType* MatrixGraph<VertexType, EdgeType>::insertVertex(int index) {
 		adjacencyMatrix[i].insert(adjacencyMatrix[i].begin() + index, NULL);
 
 	return newVertex;
+}
+
+template<typename VertexType, typename EdgeType>
+inline bool MatrixGraph<VertexType, EdgeType>::insertVertex(int index, VertexType* vertex) {
+	if (index < 0 || index > adjacencyMatrix.size()) {
+		throw "Выход индекса за пределы списка";
+		return false;
+	}
+
+	this->vertexVector.insert(this->vertexVector.begin() + index, vertex);
+
+	// Вставка новой строки
+	vector<EdgeType*> newLine;
+	newLine.assign(adjacencyMatrix.size(), NULL);
+	adjacencyMatrix.insert(adjacencyMatrix.begin() + index, newLine);
+
+	for (int i = 0; i < adjacencyMatrix.size(); i++)
+		adjacencyMatrix[i].insert(adjacencyMatrix[i].begin() + index, NULL);
+
+	return true;
 }
 
 template<typename VertexType, typename EdgeType>
