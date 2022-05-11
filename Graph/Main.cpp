@@ -2,6 +2,7 @@
 #include "SimpleGraph.h"
 #include "Vertex.h"
 #include "Edge.h"
+#include "Task2.h"
 using namespace std;
 
 int main() {
@@ -105,6 +106,7 @@ int main() {
              << "6) Итератор исходящих рёбер" << endl
              << "7) Преобразовать в List-Граф" << endl
              << "8) Преобразовать в Matrix-Граф" << endl
+             << "9) Задание 2" << endl
              << "0) Выход" << endl
              << endl << "> ";
 
@@ -553,6 +555,13 @@ int main() {
                 cout << exception << endl;
                 system("pause");
             }
+            break;
+        }
+        case 9: {
+            Task2<Vertex<string, int>, Edge<Vertex<string, int>, int, int>> task2 = 
+                Task2<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>(simpleGraph);
+
+
             break;
         }
         case 0:

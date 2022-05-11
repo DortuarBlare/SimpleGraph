@@ -280,8 +280,8 @@ inline SimpleGraph<VertexType, EdgeType>::SimpleGraph(int amountOfVertices, int 
 	srand(time(0));
 	while (getAmountOfEdges() != amountOfEdges) {
 		try {
-			int v1 = rand() % (getAmountOfVertices() - 1);
-			int v2 = rand() % (getAmountOfVertices() - 1);
+			int v1 = rand() % getAmountOfVertices();
+			int v2 = rand() % getAmountOfVertices();
 
 			if (v1 == v2)
 				continue;
@@ -301,7 +301,23 @@ inline SimpleGraph<VertexType, EdgeType>::SimpleGraph(int amountOfVertices, int 
 template<typename VertexType, typename EdgeType>
 inline SimpleGraph<VertexType, EdgeType>::SimpleGraph(const SimpleGraph<VertexType, EdgeType>& graph) {
 	delete this->graph;
-	this->graph = graph.getGraph();
+
+	if (graph.isListGraph())
+		this->graph = new ListGraph<VertexType, EdgeType>(graph.isDirected());
+	else
+		this->graph = new MatrixGraph<VertexType, EdgeType>(graph.isDirected());
+
+	for (auto vertex : graph->getVertexVector()) {
+		this->graph->insertVertex(getAmountOfVertices(), vertex);
+	}
+
+	SimpleGraph<VertexType, EdgeType>::EdgeIterator it = SimpleGraph<VertexType, EdgeType>::EdgeIterator(graph);
+
+	for (it.begin(); !it.isOnEnd(); it++) {
+		int v1 = getVertexIndex((*it)->getV1());
+		int v2 = getVertexIndex((*it)->getV2());
+		this->graph->insertEdge(v1, v2, *it);
+	}
 }
 
 template<typename VertexType, typename EdgeType>
