@@ -102,6 +102,10 @@ public:
 
 			return false;
 		}
+
+		bool isOnEnd() {
+			return it->isOnEnd();
+		}
 	};
 
 	class EdgeIterator {
@@ -232,6 +236,10 @@ public:
 			}
 
 			return false;
+		}
+
+		bool isOnEnd() {
+			return it->isOnEnd();
 		}
 	};
 };

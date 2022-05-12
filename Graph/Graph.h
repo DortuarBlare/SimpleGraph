@@ -106,6 +106,10 @@ public:
 
 			return false;
 		}
+
+		bool isOnEnd() {
+			return onEnd;
+		}
 	};
 
 	class EdgeIterator {
@@ -130,6 +134,8 @@ public:
 		virtual EdgeType* operator*() = 0;
 
 		virtual bool end() = 0;
+
+		virtual bool isOnEnd() = 0;
 	};
 };
 
@@ -367,7 +373,11 @@ public:
 
 				it = graph->adjacencyList[listIndex].begin();
 
-				while (it != graph->adjacencyList[listIndex].end()) {
+				if (*it) {
+					onEnd = false;
+					return true;
+				}
+				/*while (it != graph->adjacencyList[listIndex].end()) {
 					if (graph->isDirected()) {
 						if (*it) {
 							onEnd = false;
@@ -381,8 +391,7 @@ public:
 						}
 					}
 					it++;
-				}
-				
+				}*/
 			}
 			else
 				throw "В графе отсутствуют ребра";
@@ -395,7 +404,13 @@ public:
 			if (onEnd)
 				return false;
 
-			while (++it != graph->adjacencyList[listIndex].end()) {
+			if (++it != graph->adjacencyList[listIndex].end()) {
+				if (*it) {
+					onEnd = false;
+					return true;
+				}
+			}
+			/*while (++it != graph->adjacencyList[listIndex].end()) {
 				if (graph->isDirected()) {
 					if (*it) {
 						onEnd = false;
@@ -408,7 +423,7 @@ public:
 						return true;
 					}
 				}
-			}
+			}*/
 
 			onEnd = true;
 			return false;
@@ -815,7 +830,11 @@ public:
 
 				it = graph->adjacencyMatrix[vectorIndex].begin();
 
-				while (it != graph->adjacencyMatrix[vectorIndex].end()) {
+				if (*it != NULL) {
+					onEnd = false;
+					return true;
+				}
+				/*while (it != graph->adjacencyMatrix[vectorIndex].end()) {
 					if (graph->isDirected()) {
 						if (*it != NULL) {
 							onEnd = false;
@@ -829,7 +848,7 @@ public:
 						}
 					}
 					it++;
-				}
+				}*/
 			}
 			else
 				throw "В графе отсутствуют ребра";
@@ -842,7 +861,13 @@ public:
 			if (onEnd)
 				return false;
 
-			for (it++; it != graph->adjacencyMatrix[vectorIndex].end(); it++) {
+			if (++it != graph->adjacencyMatrix[vectorIndex].end()) {
+				if (*it != NULL) {
+					onEnd = false;
+					return true;
+				}
+			}
+			/*for (it++; it != graph->adjacencyMatrix[vectorIndex].end(); it++) {
 				if (graph->directed) {
 					if (*it != NULL) {
 						onEnd = false;
@@ -855,7 +880,7 @@ public:
 						return true;
 					}
 				}
-			}
+			}*/
 
 			onEnd = true;
 			return false;
@@ -892,6 +917,10 @@ public:
 
 			return false;
 		};
+
+		bool isOnEnd() {
+			return onEnd;
+		}
 	};
 };
 
