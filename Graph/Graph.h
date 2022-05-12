@@ -259,9 +259,17 @@ public:
 					for (it = graph->adjacencyList[listIndex].begin();
 						 it != graph->adjacencyList[listIndex].end();
 						 it++) {
-						if (*it) {
-							onEnd = false;
-							return true;
+						if (graph->directed) {
+							if (*it) {
+								onEnd = false;
+								return true;
+							}
+						}
+						else {
+							if (*it && graph->getVertexIndex((*it)->getV1()) == listIndex) {
+								onEnd = false;
+								return true;
+							}
 						}
 					}
 				}
@@ -359,10 +367,22 @@ public:
 
 				it = graph->adjacencyList[listIndex].begin();
 
-				if (*it) {
-					onEnd = false;
-					return true;
+				while (it != graph->adjacencyList[listIndex].end()) {
+					if (graph->isDirected()) {
+						if (*it) {
+							onEnd = false;
+							return true;
+						}
+					}
+					else {
+						if (*it && graph->getVertexIndex((*it)->getV1()) == listIndex) {
+							onEnd = false;
+							return true;
+						}
+					}
+					it++;
 				}
+				
 			}
 			else
 				throw "В графе отсутствуют ребра";
@@ -375,10 +395,18 @@ public:
 			if (onEnd)
 				return false;
 
-			if (++it != graph->adjacencyList[listIndex].end()) {
-				if (*it) {
-					onEnd = false;
-					return true;
+			while (++it != graph->adjacencyList[listIndex].end()) {
+				if (graph->isDirected()) {
+					if (*it) {
+						onEnd = false;
+						return true;
+					}
+				}
+				else {
+					if (*it && graph->getVertexIndex((*it)->getV1()) == listIndex) {
+						onEnd = false;
+						return true;
+					}
 				}
 			}
 
@@ -679,9 +707,17 @@ public:
 					for (it = graph->adjacencyMatrix[vectorIndex].begin();
 						it != graph->adjacencyMatrix[vectorIndex].end();
 						it++) {
-						if (*it != NULL) {
-							onEnd = false;
-							return true;
+						if (graph->directed) {
+							if (*it != NULL) {
+								onEnd = false;
+								return true;
+							}
+						}
+						else {
+							if (*it != NULL && graph->getVertexIndex((*it)->getV1()) == vectorIndex) {
+								onEnd = false;
+								return true;
+							}
 						}
 					}
 				}
@@ -779,9 +815,20 @@ public:
 
 				it = graph->adjacencyMatrix[vectorIndex].begin();
 
-				if (*it != NULL) {
-					onEnd = false;
-					return true;
+				while (it != graph->adjacencyMatrix[vectorIndex].end()) {
+					if (graph->isDirected()) {
+						if (*it != NULL) {
+							onEnd = false;
+							return true;
+						}
+					}
+					else {
+						if (*it != NULL && graph->getVertexIndex((*it)->getV1()) == vectorIndex) {
+							onEnd = false;
+							return true;
+						}
+					}
+					it++;
 				}
 			}
 			else

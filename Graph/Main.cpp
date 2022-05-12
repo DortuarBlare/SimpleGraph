@@ -86,7 +86,7 @@ int main() {
             break;
         }
     }
-    
+
     while (true) {
         system("cls");
         cout << "Текущее  состояние:\t";

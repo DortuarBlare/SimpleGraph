@@ -10,7 +10,7 @@ public:
 	SimpleGraph(); // Пустой List-Граф
 	SimpleGraph(int amountOfVertices, bool directed, bool listGraph);
 	SimpleGraph(int amountOfVertices, int amountOfEdges, bool directed, bool listGraph); // Случайные ребра
-	SimpleGraph(const SimpleGraph<VertexType, EdgeType>& graph);
+	SimpleGraph(SimpleGraph<VertexType, EdgeType>& graph);
 	~SimpleGraph();
 
 	// Вершины
@@ -299,24 +299,23 @@ inline SimpleGraph<VertexType, EdgeType>::SimpleGraph(int amountOfVertices, int 
 }
 
 template<typename VertexType, typename EdgeType>
-inline SimpleGraph<VertexType, EdgeType>::SimpleGraph(const SimpleGraph<VertexType, EdgeType>& graph) {
+inline SimpleGraph<VertexType, EdgeType>::SimpleGraph(SimpleGraph<VertexType, EdgeType>& simpleGraph) {
 	delete this->graph;
 
-	if (graph.isListGraph())
-		this->graph = new ListGraph<VertexType, EdgeType>(graph.isDirected());
+	if (simpleGraph.isListGraph())
+		this->graph = new ListGraph<VertexType, EdgeType>(simpleGraph.isDirected());
 	else
-		this->graph = new MatrixGraph<VertexType, EdgeType>(graph.isDirected());
+		this->graph = new MatrixGraph<VertexType, EdgeType>(simpleGraph.isDirected());
 
-	for (auto vertex : graph->getVertexVector()) {
-		this->graph->insertVertex(getAmountOfVertices(), vertex);
-	}
+	for (auto vertex : simpleGraph.getGraph()->getVertexVector())
+		this->graph->insertVertex(getAmountOfVertices(), new VertexType(vertex->getName(), vertex->getData()));
 
-	SimpleGraph<VertexType, EdgeType>::EdgeIterator it = SimpleGraph<VertexType, EdgeType>::EdgeIterator(graph);
+	EdgeIterator it = EdgeIterator(simpleGraph);
 
 	for (it.begin(); !it.isOnEnd(); it++) {
-		int v1 = getVertexIndex((*it)->getV1());
-		int v2 = getVertexIndex((*it)->getV2());
-		this->graph->insertEdge(v1, v2, *it);
+		int v1 = simpleGraph.getVertexIndex((*it)->getV1());
+		int v2 = simpleGraph.getVertexIndex((*it)->getV2());
+		this->graph->insertEdge(v1, v2, new EdgeType(getVertexByIndex(v1), getVertexByIndex(v2)));
 	}
 }
 
