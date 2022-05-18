@@ -558,16 +558,14 @@ int main() {
             break;
         }
         case 9: {
+            if (simpleGraph->isDirected()) {
+                cout << "Для решения задачи необходим ориентированный граф!" << endl;
+                break;
+            }
+
             Task2<Vertex<string, int>, Edge<Vertex<string, int>, int, int>> task2 = 
                 Task2<Vertex<string, int>, Edge<Vertex<string, int>, int, int>>(simpleGraph);
-
-            int v1, v2;
-
-            cout << "Введите первый индекс: ";
-            cin >> v1;
-            cout << "Введите второй индекс: ";
-            cin >> v2;
-            task2.IsVertexesDoublyConnected(simpleGraph, simpleGraph->getVertexByIndex(v1), simpleGraph->getVertexByIndex(v2));
+            
             system("pause");
             break;
         }

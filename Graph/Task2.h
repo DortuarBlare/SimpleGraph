@@ -4,12 +4,14 @@
 template<typename VertexType, typename EdgeType>
 class Task2 {
 private:
+	bool vectorHas(vector<int>& vec, int element);
 
 public:
-	bool IsVertexesDoublyConnected(SimpleGraph<VertexType, EdgeType>* graph, VertexType* v1, VertexType* v2);
+	bool VertexesDoublyConnected(SimpleGraph<VertexType, EdgeType>* graph, VertexType* v1, VertexType* v2);
 	SimpleGraph<VertexType, EdgeType>* simpleGraph;
 	SimpleGraph<VertexType, EdgeType>* resultGraph;
 
+	Task2();
 	Task2(SimpleGraph<VertexType, EdgeType>* simpleGraph);
 	Task2(const Task2& task);
 	~Task2();
@@ -21,72 +23,207 @@ public:
 };
 
 template<typename VertexType, typename EdgeType>
-inline bool Task2<VertexType, EdgeType>::IsVertexesDoublyConnected(SimpleGraph<VertexType, EdgeType>* graph, VertexType* v1, VertexType* v2) {
-	/*typename SimpleGraph<VertexType, EdgeType>::EdgeIterator it = typename SimpleGraph<VertexType, EdgeType>::EdgeIterator(*resultGraph);
+inline bool Task2<VertexType, EdgeType>::vectorHas(vector<int>& vec, int element) {
+	for (auto index : vec) {
+		/*if (index == vec.front())
+			continue;*/
 
-	for (it.begin(); !it.isOnEnd(); it++) {
-		int v1 = getVertexIndex((*it)->getV1());
-		int v2 = getVertexIndex((*it)->getV2());
-		listGraph->insertEdge(v1, v2, *it);
-	}*/
-	typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator it =
-		typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator(*graph, graph->getVertexIndex(v1));
-	vector<int> path;
-	bool hasIndex = false;
-	bool foundPath = false;
-
-	path.push_back(graph->getVertexIndex(v1));
-	for (; !it.isOnEnd(); it++) {
-		if (path[path.size() - 1] == graph->getVertexIndex((*it)->getV1())) {
-			if (graph->getVertexIndex(v2) == graph->getVertexIndex((*it)->getV2())) {
-				foundPath = true;
-				break;
-			}
-
-			for (auto index : path) {
-				if (index == graph->getVertexIndex((*it)->getV2())) {
-					hasIndex = true;
-					break;
-				}
-			}
-
-			if (!hasIndex) {
-				path.push_back(graph->getVertexIndex((*it)->getV2()));
-				it = typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator(*graph, path[path.size() - 1]);
-			}
-		}
-		else {
-			if (graph->getVertexIndex(v2) == graph->getVertexIndex((*it)->getV1())) {
-				foundPath = true;
-				break;
-			}
-
-			for (auto index : path) {
-				if (index == graph->getVertexIndex((*it)->getV1())) {
-					hasIndex = true;
-					break;
-				}
-			}
-
-			if (!hasIndex) {
-				path.push_back(graph->getVertexIndex((*it)->getV1()));
-				it = typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator(*graph, path[path.size() - 1]);
-			}
-		}
-		hasIndex = false;
-	}
-
-	if (true) {
-		graph->print(true);
-
-		cout << endl /*<< graph->getVertexIndex(v1) << " -> "*/;
-		for (auto index : path)
-			cout << index << " -> ";
-		//cout << graph->getVertexIndex(v2) << endl;
+		if (index == element)
+			return true;
 	}
 
 	return false;
 }
+
+template<typename VertexType, typename EdgeType>
+inline bool Task2<VertexType, EdgeType>::VertexesDoublyConnected(SimpleGraph<VertexType, EdgeType>* graph, VertexType* v1, VertexType* v2) {
+	typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator it =
+		typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator(*graph, graph->getVertexIndex(v1));
+	vector<int> visitedVertices;
+	vector<int> firstPath;
+	vector<int> secondPath;
+	bool hasIndex = false;
+	bool foundFirstPath = false, foundSecondPath = false;
+	bool checkedAllVertexEdges = false;
+	int attemptsNumber = 0;
+	int indexV1 = graph->getVertexIndex(v1);
+	int indexV2 = graph->getVertexIndex(v2);
+
+	visitedVertices.push_back(indexV1);
+
+	while (!foundFirstPath) {
+		if (attemptsNumber >= graph->getAmountOfEdges())
+			break;
+
+		firstPath.clear();
+		firstPath.push_back(indexV1);
+		it = typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator(*graph, indexV1);
+
+		while (!it.isOnEnd()) {
+			int currentIndexV1 = graph->getVertexIndex((*it)->getV1());
+			int currentIndexV2 = graph->getVertexIndex((*it)->getV2());
+
+			if (firstPath.back() == currentIndexV1) {
+				if (indexV2 == currentIndexV2) {
+					foundFirstPath = true;
+					firstPath.push_back(indexV2);
+					break;
+				}
+
+				if (checkedAllVertexEdges) {
+					hasIndex = vectorHas(visitedVertices, currentIndexV2);
+
+					if (!hasIndex) {
+						firstPath.push_back(currentIndexV2);
+						visitedVertices.push_back(currentIndexV2);
+						it = typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator(*graph, firstPath.back());
+						checkedAllVertexEdges = false;
+					}
+				}
+			}
+			else {
+				if (indexV2 == currentIndexV1) {
+					foundFirstPath = true;
+					firstPath.push_back(indexV2);
+					break;
+				}
+
+				if (checkedAllVertexEdges) {
+					hasIndex = vectorHas(visitedVertices, currentIndexV1);
+
+					if (!hasIndex) {
+						firstPath.push_back(currentIndexV1);
+						visitedVertices.push_back(currentIndexV1);
+						it = typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator(*graph, firstPath.back());
+						checkedAllVertexEdges = false;
+					}
+				}
+			}
+
+			it++;
+
+			if (it.isOnEnd() && !checkedAllVertexEdges) {
+				it.begin();
+				checkedAllVertexEdges = true;
+			}
+			else if (it.isOnEnd() && checkedAllVertexEdges) {
+				if (firstPath.size() >= 3)
+					it = typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator(*graph, firstPath[firstPath.size() - 2]);
+
+				checkedAllVertexEdges = false;
+				break;
+			}
+
+			hasIndex = false;
+		}
+
+		attemptsNumber++;
+	}
+
+	/*if (foundFirstPath) {
+		graph->print(true);
+
+		cout << endl << "Первый путь: ";
+		for (auto index : firstPath)
+			cout << index << " -> ";
+		cout << "\b\b\b  " << endl;
+	}
+	else {
+		cout << "Ни один путь не был найден :(" << endl;
+		return false;
+	}*/
+
+	/*cout << "Посещенные вершины: ";
+	for (auto index : visitedVertices)
+		cout << index << " ";
+	cout << endl << "Ушло " << attemptsNumber << " попыток" << endl;*/
+
+	attemptsNumber = 0;
+	visitedVertices.clear();
+	visitedVertices.push_back(indexV1);
+	/*if (firstPath.size() > 2) {
+		firstPath.erase(firstPath.begin());
+		firstPath.pop_back();
+	}*/
+
+	while (!foundSecondPath) {
+		if (attemptsNumber >= graph->getAmountOfEdges())
+			break;
+
+		secondPath.clear();
+		secondPath.push_back(indexV1);
+		it = typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator(*graph, indexV1);
+
+		while (!it.isOnEnd()) {
+			int currentIndexV1 = graph->getVertexIndex((*it)->getV1());
+			int currentIndexV2 = graph->getVertexIndex((*it)->getV2());
+
+			if (secondPath.back() == currentIndexV1) {
+				if (indexV2 == currentIndexV2) {
+					secondPath.push_back(indexV2);
+
+					if (firstPath == secondPath) {
+						secondPath.pop_back();
+						it++;
+						continue;
+					}
+
+					foundSecondPath = true;
+
+					break;
+				}
+
+				if (!vectorHas(firstPath, currentIndexV2) &&
+					!vectorHas(visitedVertices, currentIndexV2)) {
+					secondPath.push_back(currentIndexV2);
+					visitedVertices.push_back(currentIndexV2);
+					it = typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator(*graph, secondPath.back());
+				}
+			}
+			else {
+				if (indexV2 == currentIndexV1) {
+					secondPath.push_back(indexV2);
+
+					if (firstPath == secondPath) {
+						secondPath.pop_back();
+						it++;
+						continue;
+					}
+
+					foundSecondPath = true;
+
+					break;
+				}
+
+				if (!vectorHas(firstPath, currentIndexV1) &&
+					!vectorHas(visitedVertices, currentIndexV1)) {
+					secondPath.push_back(currentIndexV1);
+					visitedVertices.push_back(currentIndexV1);
+					it = typename SimpleGraph<VertexType, EdgeType>::OutputEdgeIterator(*graph, secondPath.back());
+				}
+			}
+
+			it++;
+			hasIndex = false;
+		}
+
+		attemptsNumber++;
+	}
+
+	/*if (foundSecondPath) {
+		cout << endl << "Второй путь: ";
+		for (auto index : secondPath)
+			cout << index << " -> ";
+		cout << "\b\b\b  " << endl;
+	}
+	else
+		cout << "Второй путь не был найден :(" << endl;*/
+
+	return foundFirstPath && foundSecondPath;
+}
+
+template<typename VertexType, typename EdgeType>
+inline Task2<VertexType, EdgeType>::Task2() {}
 
 template<typename VertexType, typename EdgeType>
 inline Task2<VertexType, EdgeType>::Task2(SimpleGraph<VertexType, EdgeType>* simpleGraph) {
@@ -110,13 +247,34 @@ inline Task2<VertexType, EdgeType>::~Task2() {
 template<typename VertexType, typename EdgeType>
 inline void Task2<VertexType, EdgeType>::Execute() {
 	this->resultGraph = new SimpleGraph<VertexType, EdgeType>(*this->simpleGraph);
-	//IsVertexesDoublyConnected(nullptr, nullptr);
+
+	for (int i = 0; i < resultGraph->getAmountOfVertices() - 1; i++) {
+		for (int j = i + 1; j < resultGraph->getAmountOfVertices() - 1; j++) {
+			try {
+				if (
+					!VertexesDoublyConnected(
+						resultGraph,
+						resultGraph->getGraph()->getVertexVector().at(i),
+						resultGraph->getGraph()->getVertexVector().at(j)
+					)
+					)
+					resultGraph->insertEdge(
+						resultGraph->getGraph()->getVertexVector().at(i),
+						resultGraph->getGraph()->getVertexVector().at(j)
+					);
+			}
+			catch (out_of_range const& exc) {}
+			catch (const char* exception) {}
+		}
+	}
+	cout << "Результирующий граф: " << endl;
+	resultGraph->print(true);
 }
 
 template<typename VertexType, typename EdgeType>
 inline void Task2<VertexType, EdgeType>::Set(SimpleGraph<VertexType, EdgeType>* simpleGraph) {
 	this->simpleGraph = simpleGraph;
-	//Execute();
+	Execute();
 }
 
 template<typename VertexType, typename EdgeType>
