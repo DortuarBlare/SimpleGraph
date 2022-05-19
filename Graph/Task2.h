@@ -248,8 +248,8 @@ template<typename VertexType, typename EdgeType>
 inline void Task2<VertexType, EdgeType>::Execute() {
 	this->resultGraph = new SimpleGraph<VertexType, EdgeType>(*this->simpleGraph);
 
-	for (int i = 0; i < resultGraph->getAmountOfVertices() - 1; i++) {
-		for (int j = i + 1; j < resultGraph->getAmountOfVertices() - 1; j++) {
+	for (int i = 0; i < resultGraph->getAmountOfVertices(); i++) {
+		for (int j = i + 1; j < resultGraph->getAmountOfVertices(); j++) {
 			try {
 				if (
 					!VertexesDoublyConnected(
